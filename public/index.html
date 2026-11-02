@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocketIO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-B/GM4XqrwHnWXNOWMbloTmrYXZg10cakYGmpfsR/bbzQ6JAJI4ihuyADKLnBgrCe" crossorigin="anonymous">
+<script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-1a/pXj49ZQ1aHEmrJ+gMw1otqoVsYwlEnlD8mIfY2TV03r20Y0CN7uqx1tQogjPL" crossorigin="anonymous"></script>
+</head>
+<body class="container">
+    <h1 class="mt-5">Socket IO Tutorial</h1>
+    <hr>
+    <form id="myForm" action="">
+        <div class="row">
+            <div class="col-8">
+                <input type="text" name="textMessage" id="textMessage" placeholder="Message" class="form-control">
+            </div>
+            <div class="col-4">
+                <button class="theme-primary btn-solid">
+                    Send
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div class="row">
+        <div class="col">
+            <ul id='myMessages' class="mt-2">
+
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.4/socket.io.js" integrity="sha512-dDCXSKyPaEikucluA6BrNqHngOGByBEhxwwlP+GvVt90XOe0BpmZEdnIJi849R2q9rG23Yzxhiy4uKCdnrJySw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        const socket = io('http://localhost:3000');
+
+        // DOM elements refs
+        const form = document.querySelector('#myForm');
+        const messages = document.querySelector('#myMessages')
+        const textMessage = document.querySelector('#textMessage')
+
+        form.addEventListener('submit', (event) =>{
+            event.preventDefault();
+
+            const newMessage = textMessage.value;
+
+            socket.emit('message-to-server', {text: newMessage})
+
+        } )
+
+        socket.on('message-from-server', (data) => {
+            messages.innerHTML += `<li>${data.text}</li>`
+        })
+
+        // socket.on('welcome-message', (data) => {
+        //     console.log(data);
+        // })
+
+        setTimeout(() => {
+            socket.emit('client-message', { msg: 'client', name: 'Luis Cantu'})
+            // Event emit
+            // client-message
+            // { msg: 'client', name: 'Luis Cantu'}
+        },2000)
+
+    </script>
+</body>
+</html>
